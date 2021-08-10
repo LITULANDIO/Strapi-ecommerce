@@ -1,7 +1,7 @@
 <template>
 <div class="basic-layout">
     <Menu />
-    <div class="ui-container">
+    <div class="ui container">
         <slot />
     </div>
 </div>
@@ -19,6 +19,9 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
+
+
+
 
 </style>
