@@ -34,11 +34,12 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from "vue-router";
 import * as Yup from "yup";
 import BasicLayout from "@/components/layouts/BasicLayout";
 import { registerApi } from "../api/user";
+import { getTokenApi } from "../api/token";
 
 export default {
     name: 'Register',
@@ -46,10 +47,17 @@ export default {
         BasicLayout
     },
     setup(){
+
+      onMounted(() =>{
+        if(token) router.push("/")
+
+      })
+
       let formData = ref({});
       let formError = ref({});
       const router = useRouter();
       const loading = ref(false);
+      const token = getTokenApi();
 
       const shemaForm = Yup.object().shape({
         username: Yup.string().required(true),
