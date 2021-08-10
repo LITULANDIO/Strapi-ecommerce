@@ -7,8 +7,8 @@
       <input 
         type="text" 
         placeholder="Nombre de usuario" 
-        v-model="formData.name"
-        :class="{error: formError.name}"/>
+        v-model="formData.username"
+        :class="{error: formError.username}"/>
     </div>
     <div class="field">
       <input 
@@ -24,7 +24,7 @@
         v-model="formData.password"
         :class="{error: formError.password}"/>
     </div>
-    <button type="submit" class="ui button fluid primary">Crear usuario</button>
+    <button type="submit" class="ui button fluid primary" :class="{loading}">Crear usuario</button>
   </form>
    <router-link to="/login">
     Iniciar sesión
@@ -35,8 +35,10 @@
 
 <script>
 import { ref } from 'vue';
+import { useRouter } from "vue-router";
 import * as Yup from "yup";
-import BasicLayout from "@/components/layouts/BasicLayout"
+import BasicLayout from "@/components/layouts/BasicLayout";
+import { registerApi } from "../api/user";
 
 export default {
     name: 'Register',
@@ -46,23 +48,34 @@ export default {
     setup(){
       let formData = ref({});
       let formError = ref({});
+      const router = useRouter();
+      const loading = ref(false);
 
       const shemaForm = Yup.object().shape({
-        name: Yup.string().required(true),
+        username: Yup.string().required(true),
         email: Yup.string().email(true).required(true),
         password: Yup.string().required(true)
       })
 
       const onRegister = async () =>{
         formError.value = {};
+        loading.value = true;
         try{
           await shemaForm.validate(formData.value, { abortEarly: false });
+
+          try{
+            const response = await registerApi(formData.value);
+            router.push("/login");
+          }catch(error){
+            console.error(`Error formData: ${error}`)
+          }
         }catch(error){
           error.inner.forEach((err) =>{
             formError.value[err.path] = err.message
           })
           console.error(`Error: ${error}`)
         }
+        loading.value = false;
       }
 
 
