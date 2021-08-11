@@ -6,7 +6,9 @@
 </template>
 
 <script>
+import { ref, onMounted } from "vue";
 import  BasicLayout from "@/components/layouts/BasicLayout";
+import { getProducts } from "../api/product";
 export default {
     name: 'Category',
     components:{
@@ -14,7 +16,7 @@ export default {
     },
     watch:{
         $route(to, from){
-            console.log(to)
+            console.log(to, from)
         }
     }
 }
