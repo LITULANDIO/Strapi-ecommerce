@@ -7,3 +7,7 @@ export const setTokenApi = (token) =>{
 export const getTokenApi = () =>{
     return localStorage.getItem(TOKEN)
 }
+
+export const deleteTokenApi = () =>{
+    return localStorage.removeItem(TOKEN)
+}
