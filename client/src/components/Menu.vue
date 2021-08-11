@@ -4,7 +4,9 @@
       <div class="left menu">
         <router-link class="item" to="/">
           <img class="ui small image" src="../assets/logo-ecommerce.png" alt="ecommerce" />
-          <p>Categorias...</p>
+          <template v-for="category in categories" :key="category.id">
+            <router-link class="item" :to="category.slug">{{category.title}}</router-link>
+          </template>
         </router-link>
       </div>
       <div class="right menu">
@@ -25,11 +27,24 @@
 </template>
 
 <script>
+import { ref, onMounted } from "vue";
 import { getTokenApi, deleteTokenApi } from "../api/token";
+import { getCategoriesApi } from "../api/category";
 export default {
   name: "Menu",
   setup(){
+    let categories = ref(null);
     const token = getTokenApi();
+
+    onMounted(() =>{
+      getCategories()
+    });
+
+    const getCategories = async () =>{
+      const response = await getCategoriesApi();
+      categories.value = response;
+    }
+
     const logout = () =>{
       deleteTokenApi();
       location.replace("/")
@@ -37,6 +52,7 @@ export default {
 
     return{
       token,
+      categories,
       logout
     }
   }
