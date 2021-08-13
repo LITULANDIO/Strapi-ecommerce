@@ -5,15 +5,19 @@
         <slot />
     </div>
 </div>
+
+<Cart />
   
 </template>
 
 <script>
 import Menu from "../Menu.vue";
+import Cart from "../Cart.vue";
 export default {
     name: 'BasicLayout',
     components:{
-        Menu
+        Menu,
+        Cart
     }
 
 }
