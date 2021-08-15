@@ -2,7 +2,7 @@
 <div class="cart-dimmer" :class="{open: showCart}" @click="closeCart"></div>
 <div class="cart" :class="{open: showCart}">
  <CartHeader :closeCart="closeCart"/>
- <CartBody :products="products"/>
+ <CartBody :products="products" :reloadCartFn="reloadCartFn"/>
 </div>
 </template>
 
@@ -21,15 +21,21 @@ export default {
     setup(){
         const store = useStore();
         const showCart = computed(() => store.state.showCart);
-        let products = ref(null)
+        let products = ref(null);
+        let reloadCart = ref(false);
 
         const getProductsCart = async () =>{
             const response = await getProductsCartApi();
             products.value = response;
         }
 
+        const reloadCartFn = () =>{
+            reloadCart.value = !reloadCart.value;
+        }
+
         watchEffect(() =>{
             showCart.value;
+            reloadCart.value;
             getProductsCart();
         })
 
@@ -40,7 +46,8 @@ export default {
         return{
             showCart,
             closeCart,
-            products
+            products,
+            reloadCartFn
         }
     }
 

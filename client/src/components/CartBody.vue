@@ -8,9 +8,9 @@
         <div class="price">
             <p>{{product.price}}€</p>
             <div class="quantity">
-                <button class="ui button primary" size="large">+</button>
+                <button class="ui button primary" size="large" @click="increaseProductCart(product.id)">+</button>
                 <p>{{product.quantity}}</p>
-                <button class="ui button primary" size="large">-</button>
+                <button class="ui button primary" size="large" @click="decreaseProductCart(product.id)">-</button>
             </div>
         </div>
     </div>
@@ -20,18 +20,33 @@
 
 <script>
 import { API_URL } from "../utils/constants";
+import { addProductCartApi, deleteProductCartApi } from "../api/card";
 export default {
     name: 'CartBody',
     props:{
         products:{
             type: Array
+        },
+        reloadCartFn:{
+            type: Function
         }
     },
-    setup(){
-        console.log('api =>', API_URL)
+    setup(props){
+        const increaseProductCart = (id) =>{
+            addProductCartApi(id);
+            props.reloadCartFn();
+        }
+
+        const decreaseProductCart = (id) =>{
+            deleteProductCartApi(id);
+            props.reloadCartFn();
+        }
+
 
         return{
-            API_URL
+            API_URL,
+            increaseProductCart,
+            decreaseProductCart
         }
     }
 
