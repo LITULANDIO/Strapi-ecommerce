@@ -20,7 +20,6 @@ export default {
         product: Object
     },
     setup(props){
-
         const addProductCart = (idProduct) =>{
             addProductCartApi(idProduct);
         }

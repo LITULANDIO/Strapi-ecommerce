@@ -1,4 +1,5 @@
 import { API_URL, PRODUCTS } from "../utils/constants";
+import { uniqBy, countBy } from "lodash";
 
 export const addProductCartApi = (id) =>{
     const products = getCartApi();
@@ -11,4 +12,37 @@ export const getCartApi = () =>{
     if(!products) return [];
 
     return JSON.parse(products)
+}
+
+export const getProductsCartApi = async () =>{
+    const idProducts = getCartApi();
+
+    if(idProducts.length === 0) return null
+
+    try{
+        const products = [];
+        for await (const idProduct of idProducts){
+            const response = await fetch(`${API_URL}/products/${idProduct}`);
+            const result = await response.json();
+            products.push(result);
+        }
+        console.log(products)
+
+        const productsCount = countBy(products, (product) =>{
+            return product.title
+        })
+
+        const combined = uniqBy(products, (product) =>{
+            const productTemp = product;
+            productTemp.quantity = productsCount[product.title];
+           
+            return productTemp.title;
+        })
+
+        return combined;
+
+    }catch(error){
+        console.error(`Error ${error}`)
+        return null;
+    }
 }

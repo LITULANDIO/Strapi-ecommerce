@@ -1,19 +1,37 @@
 <template>
 <div class="cart-dimmer" :class="{open: showCart}" @click="closeCart"></div>
 <div class="cart" :class="{open: showCart}">
-  <h2>Cart</h2>
-  <button @click="closeCart">Cerrar</button>
+ <CartHeader :closeCart="closeCart"/>
+ <CartBody :products="products"/>
 </div>
 </template>
 
 <script>
-import { computed } from "vue";
+import { ref, computed, watchEffect } from "vue";
 import { useStore } from "vuex";
+import { getProductsCartApi } from "../api/card";
+import CartHeader from "@/components/CartHeader";
+import CartBody from "@/components/CartBody";
 export default {
     name: 'cart',
+    components:{
+        CartHeader,
+        CartBody
+    },
     setup(){
         const store = useStore();
         const showCart = computed(() => store.state.showCart);
+        let products = ref(null)
+
+        const getProductsCart = async () =>{
+            const response = await getProductsCartApi();
+            products.value = response;
+        }
+
+        watchEffect(() =>{
+            showCart.value;
+            getProductsCart();
+        })
 
         const closeCart = () =>{
             store.commit("SET_SHOW_CART", false)
@@ -21,7 +39,8 @@ export default {
 
         return{
             showCart,
-            closeCart
+            closeCart,
+            products
         }
     }
 
