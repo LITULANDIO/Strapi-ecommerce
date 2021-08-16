@@ -63,7 +63,9 @@ export const deleteAllProductCartApi = (idProduct) =>{
         products.splice(index,1);
         localStorage.setItem(PRODUCTS, JSON.stringify(products));
         deleteAllProductCartApi(idProduct)
-    }else{
-        return null
     }
+}
+
+export const deleteCardApi = () =>{
+    localStorage.removeItem(PRODUCTS)
 }

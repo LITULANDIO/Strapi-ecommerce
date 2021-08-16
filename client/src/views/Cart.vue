@@ -27,15 +27,20 @@
           </tbody>
       </table>
 
-      <button class="ui button primary fluid" v-if="products">Guardar pedido</button>
+      <button class="ui button primary fluid" v-if="products" @click="createOrder">Guardar pedido</button>
       <h3 v-if="!products">No tienes productos en el carrito</h3>
   </BasicLayout>
 </template>
 
 <script>
 import { ref, onBeforeMount } from "vue";
+import { useRouter } from "vue-router";
+import jwtDecode from "jwt-decode";
 import  BasicLayout from "@/components/layouts/BasicLayout";
-import { getProductsCartApi, deleteAllProductCartApi } from "../api/card";
+import { getProductsCartApi, deleteAllProductCartApi, deleteCardApi } from "../api/card";
+import { createOrderApi } from "../api/order";
+import { getTokenApi } from "../api/token";
+
 
 export default {
     name: 'Cart',
@@ -45,6 +50,7 @@ export default {
     setup(){
 
         let products = ref(null);
+        const router = useRouter();
 
         const getProductsCart = async () =>{
             const response = await getProductsCartApi();
@@ -68,10 +74,33 @@ export default {
             getProductsCart();
         }
 
+        const createOrder = async() =>{
+            const data = {
+                user: getIdUser(),
+                totalPayment: getTotal(),
+                data: products.value
+            }
+            try{
+                const response = await createOrderApi(data)
+                deleteCardApi();
+                router.push("/orders")
+            }catch(error){
+                console.error(`Èrror: ${error}`)
+            }
+        }
+
+        const getIdUser = () =>{
+            const token = getTokenApi(); 
+            const { id } = jwtDecode(token);
+
+            return id;
+        }
+
         return{
             products,
             getTotal,
-            deleteAllProductCart
+            deleteAllProductCart,
+            createOrder
             
         }
     }
