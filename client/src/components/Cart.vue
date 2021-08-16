@@ -1,9 +1,10 @@
 <template>
-<div class="cart-dimmer" :class="{open: showCart}" @click="closeCart"></div>
-<div class="cart" :class="{open: showCart}">
- <CartHeader :closeCart="closeCart"/>
- <CartBody :products="products" :reloadCartFn="reloadCartFn"/>
-</div>
+    <div class="cart-dimmer" :class="{open: showCart}" @click="closeCart"></div>
+        <div class="cart" :class="{open: showCart}">
+        <CartHeader :closeCart="closeCart"/>
+        <CartBody :products="products" :reloadCartFn="reloadCartFn"/>
+        <CartFooter :products="products" :closeCart="closeCart" v-if="products"/>
+    </div>
 </template>
 
 <script>
@@ -12,11 +13,14 @@ import { useStore } from "vuex";
 import { getProductsCartApi } from "../api/card";
 import CartHeader from "@/components/CartHeader";
 import CartBody from "@/components/CartBody";
+import CartFooter from "@/components/CartFooter";
+
 export default {
     name: 'cart',
     components:{
         CartHeader,
-        CartBody
+        CartBody,
+        CartFooter
     },
     setup(){
         const store = useStore();

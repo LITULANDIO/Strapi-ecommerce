@@ -26,7 +26,7 @@ export const getProductsCartApi = async () =>{
             const result = await response.json();
             products.push(result);
         }
-        console.log(products)
+        //console.log(products)
 
         const productsCount = countBy(products, (product) =>{
             return product.title
@@ -53,4 +53,17 @@ export const deleteProductCartApi = (idProduct) =>{
     const index = products.indexOf(idProduct);
     if(index > -1) products.splice(index,1);
     localStorage.setItem(PRODUCTS, JSON.stringify(products));
+}
+
+export const deleteAllProductCartApi = (idProduct) =>{
+    const products = getCartApi();
+
+    const index = products.indexOf(idProduct);
+    if(index > -1){
+        products.splice(index,1);
+        localStorage.setItem(PRODUCTS, JSON.stringify(products));
+        deleteAllProductCartApi(idProduct)
+    }else{
+        return null
+    }
 }
